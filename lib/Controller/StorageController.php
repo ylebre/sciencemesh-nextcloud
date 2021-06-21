@@ -3,6 +3,8 @@ namespace OCA\ScienceMesh\Controller;
 
 use OCA\ScienceMesh\ServerConfig;
 use OCA\ScienceMesh\PlainResponse;
+use OCA\ScienceMesh\ResourceServer;
+use OCA\ScienceMesh\NextcloudAdapter;
 
 use OCP\IRequest;
 use OCP\IUserManager;
@@ -18,7 +20,6 @@ use OCP\AppFramework\Http\Response;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\AppFramework\Controller;
-use Pdsinterop\Solid\Resources\Server as ResourceServer;
 
 class StorageController extends Controller {
 	/* @var IURLGenerator */
@@ -40,7 +41,7 @@ class StorageController extends Controller {
 
 	private function getFileSystem() {
 		// Create the Nextcloud Adapter
-		$adapter = new \Pdsinterop\Flysystem\Adapter\Nextcloud($this->sciencemeshFolder);
+		$adapter = new NextcloudAdapter($this->sciencemeshFolder);
 		$filesystem = new \League\Flysystem\Filesystem($adapter);
 		return $filesystem;
 	}
