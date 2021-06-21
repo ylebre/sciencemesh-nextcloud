@@ -55,7 +55,7 @@ class StorageController extends Controller {
 	private function initializeStorage($userId) {
 		$this->userFolder = $this->rootFolder->getUserFolder($userId);
 		if (!$this->userFolder->nodeExists("sciencemesh")) {
-			$this->userFolder->newFolder("sciencemesh"); // Create the Solid directory for storage if it doesn't exist.
+			$this->userFolder->newFolder("sciencemesh"); // Create the Sciencemesh directory for storage if it doesn't exist.
 		}
 		$this->sciencemeshFolder = $this->userFolder->get("sciencemesh");
 
