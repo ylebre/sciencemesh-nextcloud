@@ -214,7 +214,6 @@ class ResourceServer
             if ($success) {
                 $response = $response->withHeader("Location", $this->baseUrl . $path);
                 $response = $response->withStatus(201);
-                $this->sendWebsocketUpdate($path);
             } else {
                 $response = $response->withStatus(500);
             }
@@ -244,38 +243,11 @@ class ResourceServer
         } else {
             $success = $filesystem->createDir($path);
             $response = $response->withStatus($success ? 201 : 500);
-            if ($success) {
-                $this->sendWebsocketUpdate($path);
-            }
         }
 
         return $response;
     }
 
-    private function sendWebsocketUpdate($path) {
-        $pubsub = $this->pubsub;
-        if (!$pubsub) {
-            return; // no pubsub server available, don't even try;
-        }
-        
-        $pubsub = str_replace("https://", "ws://", $pubsub);
-        $pubsub = str_replace("http://", "ws://", $pubsub);
-
-        $baseUrl = $this->baseUrl;
-
-        $client = new \WebSocket\Client($pubsub, array(
-            'headers' => array(
-                'Sec-WebSocket-Protocol' => 'solid-0.1'
-            )
-        ));
-        $client->send("pub $baseUrl$path\n");
-
-        while ($path != "/") {
-            $path = $this->parentPath($path);
-            $client->send("pub $baseUrl$path\n");
-        }
-    }
-    
     private function handleDeleteRequest(Response $response, string $path, $contents) : Response
     {
         $filesystem = $this->filesystem;
@@ -291,17 +263,10 @@ class ResourceServer
                     $response->getBody()->write($message);
                 } else {
                     $success = $filesystem->deleteDir($path);
-                    if ($success) {
-                        $this->sendWebsocketUpdate($path);
-                    }
-
                     $status = $success ? 204 : 500;
                 }
             } else {
                 $success = $filesystem->delete($path);
-                if ($success) {
-                    $this->sendWebsocketUpdate($path);
-                }
                 $status = $success ? 204 : 500;
             }
 
@@ -326,9 +291,6 @@ class ResourceServer
         } else {
             $success = $filesystem->update($path, $contents);
             $response = $response->withStatus($success ? 201 : 500);
-            if ($success) {
-                $this->sendWebsocketUpdate($path);
-            }
         }
 
         return $response;
