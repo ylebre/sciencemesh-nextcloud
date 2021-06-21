@@ -138,26 +138,12 @@ class ResourceServer
                         $response = $response->withHeader("updates-via", $this->pubsub);
                     }
                 }
-                break;
-
+            break;
             case 'OPTIONS':
                 $response = $response
                     ->withHeader('Vary', 'Accept')
                     ->withStatus('204')
                 ;
-                break;
-
-            case 'PATCH':
-                $contentType= $request->getHeaderLine("Content-Type");
-                switch($contentType) {
-                    case "application/sparql-update":
-                    case "application/sparql-update-single-match":
-                        $response = $this->handleSparqlUpdate($response, $path, $contents);
-                    break;
-                    default:
-                        $response = $response->withStatus(400);
-                    break;
-                }
             break;
             case 'POST':
                 $pathExists = $filesystem->has($path);
@@ -177,15 +163,9 @@ class ResourceServer
                         } else {
                             $filename = $this->guid();
                         }                        
-                        // FIXME: make this list complete for at least the things we'd expect (turtle, n3, jsonld, ntriples, rdf);
-                        // FIXME: if no content type was passed, we should reject the request according to the spec;
-                        
                         switch ($contentType) {
                             case "text/plain":
                                 $filename .= ".txt";
-                            break;
-                            case "text/turtle":
-                                $filename .= ".ttl";
                             break;
                             case "text/html":
                                 $filename .= ".html";
@@ -205,109 +185,16 @@ class ResourceServer
                 }
             break;
             case 'PUT':
-                $link = $request->getHeaderLine("Link");
-                switch ($link) {
-                    case '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"':
-                        $response = $this->handleCreateDirectoryRequest($response, $path);
-                    break;
-                    default:
-                        if ($filesystem->has($path) === true) {
-                            $response = $this->handleUpdateRequest($response, $path, $contents);
-                        } else {
-                            $response = $this->handleCreateRequest($response, $path, $contents);
-                        }
-                    break;
+                if ($filesystem->has($path) === true) {
+                    $response = $this->handleUpdateRequest($response, $path, $contents);
+                } else {
+                    $response = $this->handleCreateRequest($response, $path, $contents);
                 }
             break;
             default:
                 $message = vsprintf(self::ERROR_UNKNOWN_HTTP_METHOD, [$method]);
                 throw new \LogicException($message);
                 break;
-        }
-
-        return $response;
-    }
-
-    private function handleSparqlUpdate(Response $response, string $path, $contents) : Response
-    {
-        $filesystem = $this->filesystem;
-        $graph = new \EasyRdf_Graph();
-
-        if ($filesystem->has($path) === false) {
-            $data = '';
-        } else {
-            // read ttl data
-            $data = $filesystem->read($path);
-        }
-
-        try {
-            // Assuming this is in our native format, turtle
-            $graph->parse($data, "turtle"); 
-            // FIXME: Adding this base will allow us to parse <> entries; , $this->baseUrl . $this->basePath . $path), but that breaks the build.
-            // FIXME: Use enums from namespace Pdsinterop\Rdf\Enum\Format instead of 'turtle'?
-
-            // parse query in contents
-            if (preg_match_all("/((INSERT|DELETE).*{([^}]*)})+/", $contents, $matches, PREG_SET_ORDER)) {
-                foreach ($matches as $match) {
-                    $command = $match[2];
-                    $triples = $match[3];
-
-                    // apply changes to ttl data
-                    switch($command) {
-                        case "INSERT":
-                            // insert $triple(s) into $graph
-                            $graph->parse($triples, "turtle"); // FIXME: The triples here are in sparql format, not in turtle;
-
-                        break;
-                        case "DELETE":
-                            // delete $triples from $graph
-                            $deleteGraph = new \EasyRdf_Graph();
-                            $deleteGraph->parse($triples, "turtle"); // FIXME: The triples here are in sparql format, not in turtle;
-                            $resources = $deleteGraph->resources();
-                            foreach ($resources as $resource) {
-                                $properties = $resource->propertyUris();
-                                foreach ($properties as $property) {
-                                    $values = $resource->all($property);
-                                    if (!sizeof($values)) {
-                                        $graph->delete($resource, $property);
-                                    } else {
-                                        foreach ($values as $value) {
-                                            $count = $graph->delete($resource, $property, $value);
-                                            if ($count == 0) {
-                                                throw new \Exception("Could not delete a value", 500);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        break;
-                        default:
-                            throw new \Exception("Unimplemented SPARQL", 500);
-                        break;
-                    }
-                }
-            }
-
-            // Assuming this is in our native format, turtle
-            $output = $graph->serialise("turtle"); // FIXME: Use enums from namespace Pdsinterop\Rdf\Enum\Format?
-            // write ttl data
-
-            if ($filesystem->has($path) === true) {
-                $success = $filesystem->update($path, $output);
-                $response = $response->withStatus($success ? 201 : 500);
-            } else {
-                $success = $filesystem->write($path, $output);
-                $response = $response->withStatus($success ? 201 : 500);
-            }
-            if ($success) {
-                $this->sendWebsocketUpdate($path);
-            }
-        } catch (\EasyRdf_Exception $exception) {
-            $response->getBody()->write(self::ERROR_CAN_NOT_PARSE_FOR_PATCH);
-            $response = $response->withStatus(501);
-        } catch (\Exception $exception) {
-            $response->getBody()->write(self::ERROR_CAN_NOT_PARSE_FOR_PATCH);
-            $response = $response->withStatus(501);
         }
 
         return $response;
