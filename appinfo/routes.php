@@ -13,7 +13,6 @@ return [
         ['name' => 'storage#handlePost', 'url' => '/@{userId}/{path}', 'verb' => 'POST', 'requirements' => array('path' => '.+')],
         ['name' => 'storage#handlePut', 'url' => '/@{userId}/{path}', 'verb' => 'PUT', 'requirements' => array('path' => '.+')],
         ['name' => 'storage#handleDelete', 'url' => '/@{userId}/{path}', 'verb' => 'DELETE', 'requirements' => array('path' => '.+')],
-        ['name' => 'storage#handlePatch', 'url' => '/@{userId}/{path}', 'verb' => 'PATCH', 'requirements' => array('path' => '.+')],
         ['name' => 'storage#handleHead', 'url' => '/@{userId}/{path}', 'verb' => 'HEAD', 'requirements' => array('path' => '.+')],
 
         ['name' => 'app#appLauncher', 'url' => '/', 'verb' => 'GET'],
