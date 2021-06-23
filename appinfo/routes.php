@@ -9,11 +9,11 @@
  */
 return [
     'routes' => [
-        ['name' => 'storage#handleGet', 'url' => '/@{userId}/{path}', 'verb' => 'GET', 'requirements' => array('path' => '.+')],
-        ['name' => 'storage#handlePost', 'url' => '/@{userId}/{path}', 'verb' => 'POST', 'requirements' => array('path' => '.+')],
-        ['name' => 'storage#handlePut', 'url' => '/@{userId}/{path}', 'verb' => 'PUT', 'requirements' => array('path' => '.+')],
-        ['name' => 'storage#handleDelete', 'url' => '/@{userId}/{path}', 'verb' => 'DELETE', 'requirements' => array('path' => '.+')],
-        ['name' => 'storage#handleHead', 'url' => '/@{userId}/{path}', 'verb' => 'HEAD', 'requirements' => array('path' => '.+')],
+        ['name' => 'storage#handleGet', 'url' => '/~{userId}/{path}', 'verb' => 'GET', 'requirements' => array('path' => '.+')],
+        ['name' => 'storage#handlePost', 'url' => '/~{userId}/{path}', 'verb' => 'POST', 'requirements' => array('path' => '.+')],
+        ['name' => 'storage#handlePut', 'url' => '/~{userId}/{path}', 'verb' => 'PUT', 'requirements' => array('path' => '.+')],
+        ['name' => 'storage#handleDelete', 'url' => '/~{userId}/{path}', 'verb' => 'DELETE', 'requirements' => array('path' => '.+')],
+        ['name' => 'storage#handleHead', 'url' => '/~{userId}/{path}', 'verb' => 'HEAD', 'requirements' => array('path' => '.+')],
 
         ['name' => 'app#appLauncher', 'url' => '/', 'verb' => 'GET'],
     ]
