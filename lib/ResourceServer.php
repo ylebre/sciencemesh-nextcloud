@@ -36,7 +36,6 @@ class ResourceServer
     private $filesystem;
     /** @var Response */
     private $response;
-    private $pubsub;
     private $baseUrl;
 
     //////////////////////////////// PUBLIC API \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -45,7 +44,6 @@ class ResourceServer
     {
         $this->filesystem = $filesystem;
         $this->response = $response;
-        $this->pubsub = '';
         $this->baseUrl = '';
         $this->basePath = '';
     }
@@ -92,9 +90,6 @@ class ResourceServer
         return $method;
     }
 
-    public function setPubSubUrl($url) {
-        $this->pubsub = $url;
-    }
     public function setBaseUrl($url) {
         $this->baseUrl = $url;
 
@@ -134,9 +129,6 @@ class ResourceServer
                     $response->getBody()->rewind();
                     $response->getBody()->write('');
                     $response = $response->withStatus("204"); // CHECKME: nextcloud will remove the updates-via header - any objections to give the 'HEAD' request a 'no content' response type?
-                    if ($this->pubsub) {
-                        $response = $response->withHeader("updates-via", $this->pubsub);
-                    }
                 }
             break;
             case 'OPTIONS':
