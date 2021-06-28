@@ -58,8 +58,8 @@ class StorageController extends Controller {
 			$this->userFolder->newFolder("sciencemesh"); // Create the Sciencemesh directory for storage if it doesn't exist.
 		}
 		$this->sciencemeshFolder = $this->userFolder->get("sciencemesh");
-
 		$this->filesystem = $this->getFileSystem();
+		$this->baseUrl = $this->getStorageUrl($userId);
 	}
 	/**
 	 * @PublicPage
@@ -207,6 +207,76 @@ class StorageController extends Controller {
                 $response->getBody()->write(json_encode("OK"));
                 $response = $response->withHeader("Content-type", "application/json");
                 $response = $response->withStatus(200);
+                return $this->respond($response);
+	}
+
+	/**
+	 * @PublicPage
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function upload($userId) {
+		$this->initializeStorage($userId);
+		$request = \Laminas\Diactoros\ServerRequestFactory::fromGlobals($_SERVER, $_GET, $_POST, $_COOKIE, $_FILES);
+		$response = new \Laminas\Diactoros\Response();
+                $response->getBody()->write(json_encode("OK"));
+                $response = $response->withHeader("Content-type", "application/json");
+                $response = $response->withStatus(200);
+                return $this->respond($response);
+	}
+
+	/**
+	 * @PublicPage
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function handleUpload($userId, $path) {
+		$this->initializeStorage($userId);
+		$request = \Laminas\Diactoros\ServerRequestFactory::fromGlobals($_SERVER, $_GET, $_POST, $_COOKIE, $_FILES);
+		$response = new \Laminas\Diactoros\Response();
+
+		$filesystem = $this->filesystem;
+		$contents = $request->getBody()->getContents();
+		if ($filesystem->has($path)) {
+			$success = $filesystem->update($path, $contents);
+			if ($success) {
+				$response = $response->withStatus(200);
+			} else {
+				$response = $response->withStatus(500);
+			}
+		} else {
+			$success = $filesystem->write($path, $contents);
+			if ($success) {
+				$response = $response->withStatus(201);
+			} else {
+				$response = $response->withStatus(500);
+			}
+		}
+                return $this->respond($response);
+	}
+
+	/**
+	 * @PublicPage
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function getMD($userId) {
+		// FIXME: Get the path from the request;
+		
+		$this->initializeStorage($userId);
+		$request = \Laminas\Diactoros\ServerRequestFactory::fromGlobals($_SERVER, $_GET, $_POST, $_COOKIE, $_FILES);
+		$response = new \Laminas\Diactoros\Response();
+
+		$path = "/test.txt";
+		$filesystem = $this->filesystem;
+		if ($filesystem->has($path)) {
+			$metadata = $filesystem->getMetaData($path);
+			$response->getBody()->write(json_encode($metadata));
+			$response = $response->withStatus(200);
+			$response = $response->withHeader("Content-type", "application/json");
+		} else {
+			$response = $response->withStatus(404);
+		}
                 return $this->respond($response);
 	}
 
