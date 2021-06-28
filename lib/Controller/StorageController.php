@@ -146,7 +146,7 @@ class StorageController extends Controller {
 		$headers = $response->getHeaders();
 
 		$body = $response->getBody()->getContents();
-
+		error_log($body);
 		$result = new PlainResponse($body);
 
 		foreach ($headers as $header => $values) {
@@ -157,5 +157,66 @@ class StorageController extends Controller {
 		
 		$result->setStatus($statusCode);
 		return $result;
+	}
+
+	/**
+	 * @PublicPage
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function createHome($userId) {
+		$this->initializeStorage($userId);
+		$response = new \Laminas\Diactoros\Response();
+                $response->getBody()->write(json_encode("OK"));
+                $response = $response->withHeader("Content-type", "application/json");
+                $response = $response->withStatus(200);
+                return $this->respond($response);
+	}
+
+	/**
+	 * @PublicPage
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function listFolder($userId) {
+		error_log(json_encode($userId));
+		error_log(json_encode($_GET));
+		error_log(json_encode($_POST));
+		$this->initializeStorage($userId);
+		$request = \Laminas\Diactoros\ServerRequestFactory::fromGlobals($_SERVER, $_GET, $_POST, $_COOKIE, $_FILES);
+		$response = new \Laminas\Diactoros\Response();
+		$path = "/";
+		$contents = $this->listDirectory($path);
+                if ($contents !== false) {
+                        $response->getBody()->write($contents);
+                        $response = $response->withHeader("Content-type", "application/json");
+                        $response = $response->withStatus(200);
+                }
+                return $this->respond($response);
+	}
+
+	/**
+	 * @PublicPage
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function initiateUpload($userId) {
+		$this->initializeStorage($userId);
+		$request = \Laminas\Diactoros\ServerRequestFactory::fromGlobals($_SERVER, $_GET, $_POST, $_COOKIE, $_FILES);
+		$response = new \Laminas\Diactoros\Response();
+                $response->getBody()->write(json_encode("OK"));
+                $response = $response->withHeader("Content-type", "application/json");
+                $response = $response->withStatus(200);
+                return $this->respond($response);
+	}
+
+	private function listDirectory($path) {
+		$filesystem = $this->filesystem;
+		if ($path == "/") {
+			$listContents = $filesystem->listContents(".");// FIXME: this is a patch to make it work for Solid-Nextcloud; we should be able to just list '/';
+		} else {
+			$listContents = $filesystem->listContents($path);
+		}
+		return json_encode($listContents, JSON_PRETTY_PRINT);
 	}
 }
