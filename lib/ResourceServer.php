@@ -61,7 +61,7 @@ class ResourceServer
         if ($this->basePath) {
             $path = str_replace($this->basePath, "", $path);
         }
-    $path = rawurldecode($path);
+        $path = rawurldecode($path);
     
         // @FIXME: The path can also come from a 'Slug' header
 
