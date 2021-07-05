@@ -84,7 +84,7 @@ class RevaController extends Controller {
 		$this->initializeStorage($userId);
 		$path = $this->request->getParam("path") ?: "/";
 		// FIXME: Expected a param with a grant to add here;
-		return new JSONResponse("OK", 200);
+		return new JSONResponse("Not implemented", 200);
 	}
 
 	/**
@@ -95,7 +95,12 @@ class RevaController extends Controller {
 	public function CreateDir($userId) {
 		$this->initializeStorage($userId);
 		$path = $this->request->getParam("path") ?: "/";
-		return new JSONResponse("OK", 200);
+		$success = $this->filesystem->createDir($path);
+		if ($success) {
+			return new JSONResponse("OK", 200);
+		} else {
+			return new JSONResponse(["error" => "Could not create directory."], 500);
+		}
 	}
 
 	/**
@@ -116,7 +121,7 @@ class RevaController extends Controller {
 	public function CreateReference($userId) {
 		$this->initializeStorage($userId);
 		$path = $this->request->getParam("path") ?: "/";
-		return new JSONResponse("OK", 200);
+		return new JSONResponse("Not implemented", 200);
 	}
 
 	/**
@@ -127,7 +132,12 @@ class RevaController extends Controller {
 	public function Delete($userId) {
 		$this->initializeStorage($userId);
 		$path = $this->request->getParam("path") ?: "/";
-		return new JSONResponse("OK", 200);
+		$success = $this->filesystem->delete($path);
+		if ($success) {
+			return new JSONResponse("OK", 200);
+		} else {
+			return new JSONResponse(["error" => "Failed to delete."], 500);
+		}
 	}
 
 	/**
@@ -137,7 +147,7 @@ class RevaController extends Controller {
 	 */
 	public function EmptyRecycle($userId) {
 		$this->initializeStorage($userId);
-		return new JSONResponse("OK", 200);
+		return new JSONResponse("Not implemented", 200);
 	}
 
 	/**
@@ -209,7 +219,7 @@ class RevaController extends Controller {
 	public function ListGrants($userId) {
 		$this->initializeStorage($userId);
 		$path = $this->request->getParam("path") ?: "/";
-		return new JSONResponse("OK", 200);
+		return new JSONResponse("Not implemented", 200);
 	}
 	
 	/**
@@ -219,7 +229,7 @@ class RevaController extends Controller {
 	 */
 	public function ListRecycle($userId) {
 		$this->initializeStorage($userId);
-		return new JSONResponse("OK", 200);
+		return new JSONResponse("Not implemented", 200);
 	}
 
 	/**
@@ -230,7 +240,7 @@ class RevaController extends Controller {
 	public function ListRevisions($userId) {
 		$this->initializeStorage($userId);
 		$path = $this->request->getParam("path") ?: "/";
-		return new JSONResponse("OK", 200);
+		return new JSONResponse("Not implemented", 200);
 	}
 
 	/**
@@ -242,7 +252,12 @@ class RevaController extends Controller {
 		$this->initializeStorage($userId);
 		$from = $this->request->getParam("from");
 		$to = $this->request->getParam("to");
-		return new JSONResponse("OK", 200);
+		$success = $this->filesystem->move($from, $to);
+		if ($success) {
+			return new JSONResponse("OK", 200);
+		} else {
+			return new JSONResponse(["error" => "Failed to move."], 500);
+		}
 	}
 
 	/**
@@ -254,7 +269,7 @@ class RevaController extends Controller {
 		$this->initializeStorage($userId);
 		$path = $this->request->getParam("path") ?: "/";
 		// FIXME: Expected a grant to remove here;
-		return new JSONResponse("OK", 200);
+		return new JSONResponse("Not implemented", 200);
 	}
 
 	/**
@@ -265,7 +280,7 @@ class RevaController extends Controller {
 	public function RestoreRecycleItem($userId) {
 		$this->initializeStorage($userId);
 		$path = $this->request->getParam("path") ?: "/";
-		return new JSONResponse("OK", 200);
+		return new JSONResponse("Not implemented", 200);
 	}
 
 	/**
@@ -277,7 +292,7 @@ class RevaController extends Controller {
 		$this->initializeStorage($userId);
 		$path = $this->request->getParam("path") ?: "/";
 		// FIXME: Expected a revision param here;
-		return new JSONResponse("OK", 200);
+		return new JSONResponse("Not implemented", 200);
 	}
 
 	/**
@@ -290,7 +305,7 @@ class RevaController extends Controller {
 		$path = $this->request->getParam("path") ?: "/";
 		$metadata = $this->request->getParam("metadata");
 		// FIXME: What do we do with the existing metadata? Just toss it and overwrite with the new value? Or do we merge?
-		return new JSONResponse("OK", 200);
+		return new JSONResponse("Not implemented", 200);
 	}
 
 	/**
@@ -301,7 +316,7 @@ class RevaController extends Controller {
 	public function UnsetArbitraryMetadata($userId) {
 		$this->initializeStorage($userId);
 		$path = $this->request->getParam("path") ?: "/";
-		return new JSONResponse("OK", 200);
+		return new JSONResponse("Not implemented", 200);
 	}
 
 	/**
@@ -313,7 +328,7 @@ class RevaController extends Controller {
 		$this->initializeStorage($userId);
 		$path = $this->request->getParam("path") ?: "/";
 		// FIXME: Expected a paramater with the grant(s)
-		return new JSONResponse("OK", 200);
+		return new JSONResponse("Not implemented", 200);
 	}
 
 	/**
