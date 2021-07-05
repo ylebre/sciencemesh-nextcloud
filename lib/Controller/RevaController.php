@@ -6,6 +6,8 @@ use OCA\ScienceMesh\PlainResponse;
 use OCA\ScienceMesh\ResourceServer;
 use OCA\ScienceMesh\NextcloudAdapter;
 
+use OCA\Files_Trashbin\Trash\ITrashManager;
+
 use OCP\IRequest;
 use OCP\IUserManager;
 use OCP\IURLGenerator;
@@ -28,7 +30,7 @@ class RevaController extends Controller {
 	/* @var ISession */
 	private $session;
 	
-	public function __construct($AppName, IRootFolder $rootFolder, IRequest $request, ISession $session, IUserManager $userManager, IURLGenerator $urlGenerator, $userId, IConfig $config, \OCA\ScienceMesh\Service\UserService $UserService) 
+	public function __construct($AppName, IRootFolder $rootFolder, IRequest $request, ISession $session, IUserManager $userManager, IURLGenerator $urlGenerator, $userId, IConfig $config, \OCA\ScienceMesh\Service\UserService $UserService, ITrashManager $trashManager) 
 	{
 		parent::__construct($AppName, $request);
 		require_once(__DIR__.'/../../vendor/autoload.php');
@@ -37,6 +39,8 @@ class RevaController extends Controller {
 		$this->request     = $request;
 		$this->urlGenerator = $urlGenerator;
 		$this->session = $session;
+		$this->userManager = $userManager;
+		$this->trashManager = $trashManager;
 	}
 
 	private function getFileSystem() {
@@ -147,7 +151,16 @@ class RevaController extends Controller {
 	 */
 	public function EmptyRecycle($userId) {
 		$this->initializeStorage($userId);
-		return new JSONResponse("Not implemented", 200);
+		$user = $this->userManager->get($userId);
+		$trashItems = $this->trashManager->listTrashRoot($user);
+
+		$result = [];
+		foreach ($trashItems as $node) {
+			if (preg_match("/^sciencemesh/", $node->getOriginalLocation())) {
+				$this->trashManager->removeItem($node);
+			}
+		}
+		return new JSONResponse("OK", 200);
 	}
 
 	/**
@@ -229,7 +242,33 @@ class RevaController extends Controller {
 	 */
 	public function ListRecycle($userId) {
 		$this->initializeStorage($userId);
-		return new JSONResponse("Not implemented", 200);
+		$user = $this->userManager->get($userId);
+		$trashItems = $this->trashManager->listTrashRoot($user);
+
+		$result = [];
+		foreach ($trashItems as $node) {
+			if (preg_match("/^sciencemesh/", $node->getOriginalLocation())) {
+				$result[] = [
+				    'mimetype' => $node->getMimetype(),
+				    'path' => preg_replace("/^sciencemesh/", "", $node->getOriginalLocation()),
+				    'size' => $node->getSize(),
+				    'basename' => basename($node->getPath()),
+				    'timestamp' => $node->getMTime(),
+				    'deleted' => $node->getDeletedTime(),
+				    'type' => $node->getType(),
+				    // @FIXME: Use $node->getPermissions() to set private or public
+				    //         as soon as we figure out what Nextcloud permissions mean in this context
+				    'visibility' => 'public',
+				    /*/
+				    'CreationTime' => $node->getCreationTime(),
+				    'Etag' => $node->getEtag(),
+				    'Owner' => $node->getOwner(),
+				    /*/
+				];
+			}
+		}
+
+		return new JSONResponse($result, 200);
 	}
 
 	/**
@@ -280,7 +319,20 @@ class RevaController extends Controller {
 	public function RestoreRecycleItem($userId) {
 		$this->initializeStorage($userId);
 		$path = $this->request->getParam("path") ?: "/";
-		return new JSONResponse("Not implemented", 200);
+		$this->initializeStorage($userId);
+		$user = $this->userManager->get($userId);
+		$trashItems = $this->trashManager->listTrashRoot($user);
+
+		foreach ($trashItems as $node) {
+			if (preg_match("/^sciencemesh/", $node->getOriginalLocation())) {
+				$nodePath = preg_replace("/^sciencemesh/", "", $node->getOriginalLocation());
+				if ($path == $nodePath) {
+					$this->trashManager->restoreItem($node);
+					return new JSONResponse("OK", 200);
+				}
+			}
+		}
+		return new JSONResponse(["error" => "Not found."], 404);
 	}
 
 	/**
