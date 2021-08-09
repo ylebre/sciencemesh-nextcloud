@@ -2,14 +2,14 @@
 namespace OCA\ScienceMesh\AppInfo;
 
 use \OCP\AppFramework\App;
-
 use \OCA\ScienceMesh\Service\UserService;
-
+use \OCA\ScienceMesh\Plugins\ScienceMeshSearchPlugin;
 
 class ScienceMeshApp extends App {
 
     public const APP_ID = 'sciencemesh';
-
+    public const SHARE_TYPE_REMOTE = 6;
+    
     public function __construct(){
         parent::__construct(self::APP_ID);
 
@@ -29,7 +29,7 @@ class ScienceMeshApp extends App {
             return $c->query('UserSession')->getUser();
         });
 
+        $collaboration = $container->get('OCP\Collaboration\Collaborators\ISearch');
+        $collaboration->registerPlugin(['shareType' => 'SHARE_TYPE_REMOTE', 'class' => ScienceMeshSearchPlugin::class]);
     }
-
 }
-	
