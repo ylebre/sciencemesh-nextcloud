@@ -1,6 +1,8 @@
 <?php
 script('sciencemesh', 'script');
 style('sciencemesh', 'style');
+script("sciencemesh", "vendor/simplyedit/simply-edit");
+script("sciencemesh", "vendor/simplyedit/simply.everything");
 ?>
 
 <div id="app">
@@ -10,7 +12,9 @@ style('sciencemesh', 'style');
 
 	<div id="app-content">
 		<div id="app-content-wrapper" class="viewcontainer">
-			<?php print_unescaped($this->inc('applauncher/index')); ?>
+			<main class="sciencemesh-container sciencemesh-launcher">
+				Launcher
+			</main>
 		</div>
 	</div>
 </div>

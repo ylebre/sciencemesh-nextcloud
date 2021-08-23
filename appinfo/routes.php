@@ -46,6 +46,9 @@ return [
         ['name' => 'storage#handleDelete', 'url' => '/~{userId}/files/{path}', 'verb' => 'DELETE', 'requirements' => array('path' => '.+')],
         ['name' => 'storage#handleHead', 'url' => '/~{userId}/files/{path}', 'verb' => 'HEAD', 'requirements' => array('path' => '.+')],
 
-        ['name' => 'app#appLauncher', 'url' => '/', 'verb' => 'GET'],
+        ['name' => 'app#launcher', 'url' => '/', 'verb' => 'GET'],
+        ['name' => 'app#notifications', 'url' => '/notifications', 'verb' => 'GET'],
+        ['name' => 'app#invitations', 'url' => '/invitations', 'verb' => 'GET'],
+        ['name' => 'app#shared', 'url' => '/shared', 'verb' => 'GET'],
     ]
 ];

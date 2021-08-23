@@ -33,11 +33,62 @@ class AppController extends Controller {
          * @NoAdminRequired
          * @NoCSRFRequired
          */
-        public function appLauncher() {
-                $appLauncherData = array(
+        public function launcher() {
+                $launcherData = array(
                 );
-                $templateResponse = new TemplateResponse('sciencemesh', 'applauncher', $appLauncherData);
+                $templateResponse = new TemplateResponse('sciencemesh', 'launcher', $launcherData);
 		$policy = new ContentSecurityPolicy();
+		$policy->addAllowedStyleDomain("data:");
+		$policy->addAllowedScriptDomain("'self'");
+		$policy->addAllowedScriptDomain("'unsafe-inline'");
+		$policy->addAllowedScriptDomain("'unsafe-eval'");
+                $templateResponse->setContentSecurityPolicy($policy);
+                return $templateResponse;
+        }
+
+        /**
+         * @NoAdminRequired
+         * @NoCSRFRequired
+         */
+        public function notifications() {
+                $notificationsData = array(
+                );
+                $templateResponse = new TemplateResponse('sciencemesh', 'notifications', $notificationsData);
+                $policy = new ContentSecurityPolicy();
+                $policy->addAllowedStyleDomain("data:");
+                $policy->addAllowedScriptDomain("'self'");
+                $policy->addAllowedScriptDomain("'unsafe-inline'");
+                $policy->addAllowedScriptDomain("'unsafe-eval'");
+                $templateResponse->setContentSecurityPolicy($policy);
+                return $templateResponse;
+        }
+
+        /**
+         * @NoAdminRequired
+         * @NoCSRFRequired
+         */
+        public function invitations() {
+                $invitationsData = array(
+                );
+                $templateResponse = new TemplateResponse('sciencemesh', 'invitations', $invitationsData);
+                $policy = new ContentSecurityPolicy();
+                $policy->addAllowedStyleDomain("data:");
+                $policy->addAllowedScriptDomain("'self'");
+                $policy->addAllowedScriptDomain("'unsafe-inline'");
+                $policy->addAllowedScriptDomain("'unsafe-eval'");
+                $templateResponse->setContentSecurityPolicy($policy);
+                return $templateResponse;
+        }
+
+        /**
+         * @NoAdminRequired
+         * @NoCSRFRequired
+         */
+        public function shared() {
+                $sharesData = array(
+                );
+                $templateResponse = new TemplateResponse('sciencemesh', 'shared', $sharesData);
+        	$policy = new ContentSecurityPolicy();
 		$policy->addAllowedStyleDomain("data:");
 		$policy->addAllowedScriptDomain("'self'");
 		$policy->addAllowedScriptDomain("'unsafe-inline'");
