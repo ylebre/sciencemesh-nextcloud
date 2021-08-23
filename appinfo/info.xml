@@ -15,7 +15,7 @@
         <nextcloud min-version="15" max-version="25"/>
     </dependencies>
     <settings>
-        <admin>OCAScienceMeshSettings</admin>
+        <admin>OCA\ScienceMesh\Settings</admin>
     </settings>
     <navigations>
         <navigation>

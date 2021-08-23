@@ -1,14 +1,20 @@
 #sciencemesh-admin label {
-	width: 160px;
 	vertical-align: top;
 	display: block;
 }
 #sciencemesh-admin input {
-	width: 480px;
+	width: 100%;
 }
 #sciencemesh-admin textarea {
-	width: 480px;
+	width: 100%;
 	height: 240px;
 	font-size: 12px;
 	font-family: monospace;
+}
+#sciencemesh-admin fieldset {
+	border-top: 1px solid #ccc;
+}
+#sciencemesh-admin legend {
+	margin-left: 1em;
+	padding: 1em;
 }
