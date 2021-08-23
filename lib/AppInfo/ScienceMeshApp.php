@@ -1,9 +1,13 @@
 <?php
 namespace OCA\ScienceMesh\AppInfo;
 
-use \OCP\AppFramework\App;
-use \OCA\ScienceMesh\Service\UserService;
-use \OCA\ScienceMesh\Plugins\ScienceMeshSearchPlugin;
+use OC\Share20\IManager as ShareManager;
+use OCP\AppFramework\App;
+use OCA\ScienceMesh\Service\UserService;
+use OCA\ScienceMesh\Plugins\ScienceMeshSearchPlugin;
+use OCA\ScienceMesh\ShareProvider\ScienceMeshShareProvider;
+use OCA\ScienceMesh\ShareProvider\ShareAPIHelper;
+use OCA\ScienceMesh\Notifier\ScienceMeshNotifier;
 
 class ScienceMeshApp extends App {
 
@@ -14,6 +18,8 @@ class ScienceMeshApp extends App {
         parent::__construct(self::APP_ID);
 
         $container = $this->getContainer();
+        $server = $container->getServer();
+
         $container->registerService('UserService', function($c) {
             return new \OCA\ScienceMesh\Service\UserService(
                 $c->query('UserSession')
@@ -31,5 +37,11 @@ class ScienceMeshApp extends App {
 
         $collaboration = $container->get('OCP\Collaboration\Collaborators\ISearch');
         $collaboration->registerPlugin(['shareType' => 'SHARE_TYPE_REMOTE', 'class' => ScienceMeshSearchPlugin::class]);
+
+        $shareManager = $container->get('OCP\Share\IManager');
+        $shareManager->registerShareProvider(ScienceMeshShareProvider::class);
+
+        $notificationManager = $server->getNotificationManager();
+        $notificationManager->registerNotifierService(ScienceMeshNotifier::class);
     }
 }

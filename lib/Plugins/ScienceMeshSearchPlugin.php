@@ -36,8 +36,8 @@ class ScienceMeshSearchPlugin implements ISearchPlugin {
 			'name' => "Username ScienceMesh",
 			'type' => "ScienceMesh",
 			'value' => [
-				'shareType' => IShare::TYPE_REMOTE,
-				'shareWith' => "ScienceMeshId",
+				'shareType' => 1000,
+				'shareWith' => "alice@ScienceMeshId",
 				'server' => "ServerUrl"
 			],
 		]];
