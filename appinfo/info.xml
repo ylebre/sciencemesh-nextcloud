@@ -20,7 +20,7 @@
     <navigations>
         <navigation>
             <name>ScienceMesh</name>
-            <route>sciencemesh.app.appLauncher</route>
+            <route>sciencemesh.app.launcher</route>
             <order>10</order>
         </navigation>
     </navigations>
