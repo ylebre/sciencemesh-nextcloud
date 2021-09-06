@@ -447,7 +447,7 @@ class NextcloudAdapter implements AdapterInterface
      * @throws \OCP\Files\InvalidPathException
      * @throws \OCP\Files\NotFoundException
      */
-    private function normalizeNodeInfo(\OCP\Files\Node $node, array $metaData = []) : array
+    public function normalizeNodeInfo(\OCP\Files\Node $node, array $metaData = []) : array
     {
         return array_merge([
             'mimetype' => $this->isDirectory($node) ? "directory" : $node->getMimetype(),

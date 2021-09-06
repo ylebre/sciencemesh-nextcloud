@@ -171,8 +171,13 @@ class RevaController extends Controller {
 	public function GetMD($userId) {
 		$this->initializeStorage($userId);
 		$path = $this->request->getParam("path") ?: "/";
+
 		if ($this->filesystem->has($path)) {
-			$metadata = $filesystem->getMetaData($path);
+			$metadata = $this->filesystem->getMetaData($path);
+			return new JSONResponse($metadata, 200);
+		} else if ($path == "/") { // FIXME: Flysystem normalizes / to empty, and thus as 'does not exist';
+			$metadata = $this->filesystem->getAdapter()->normalizeNodeInfo($this->sciencemeshFolder);
+			$metadata['path'] = '/';
 			return new JSONResponse($metadata, 200);
 		} else {
 			return new JSONResponse(["error" => "File not found"], 404);
