@@ -11,25 +11,21 @@ script("sciencemesh", "vendor/simplyedit/simply.everything");
 	<div id="app-content">
 		<div id="app-content-wrapper" class="viewcontainer">
 			<main class="sciencemesh-container sciencemesh-invitations">
-				<h1>Invitation tokens</h1>
+				<h1>Contacts</h1>
 				<div class="app-content-list">
 					<div href="#" class="app-content-list-item">
 						<!-- div class="app-content-list-item-star icon-starred"></div -->
-						<div class="app-content-list-item-icon" style="background-color: rgb(151, 72, 96);">F</div>
-						<div class="app-content-list-item-line-one">f9a25050-a0cf-4717-badb-b3574e3c0963</div>
-						<div class="app-content-list-item-menu">
-							<div class="icon-clippy"></div>
-						</div>
-						<span class="app-content-list-item-details">8 hours left</span>
-						<div class="app-content-list-item-line-two">Copy to clipboard</div>
+						<div class="app-content-list-item-icon" style="background-color: rgb(151, 72, 96);">M</div>
+						<div class="app-content-list-item-line-one">michiel@pondersource.nl</div>
+						<div class="icon-delete"></div>
 					</div>
 					<div href="#" class="app-content-list-item">
 						<!-- div class="app-content-list-item-star icon-starred"></div -->
 						<div class="app-content-list-item-icon" style="background-color: rgb(31, 72, 96);">+</div>
-						<div class="app-content-list-item-line-one">Generate a new token</div>
-						<div class="app-content-list-item-line-two">Tokens are valid for 24 hours</div>
+						<!-- div class="app-content-list-item-line-one">Accept an invitation</div -->
+						<div class="app-content-list-item-line-one"><input type="text" placeholder="Enter your token here"></div>
 						<div class="app-content-list-item-menu">
-							<div class="icon-add"></div>
+						 	<div class="icon-add"></div>
 						</div>
 					</div>
 				</div>

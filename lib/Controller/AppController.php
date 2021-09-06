@@ -121,10 +121,10 @@ class AppController extends Controller {
          * @NoAdminRequired
          * @NoCSRFRequired
          */
-        public function shared() {
-                $sharesData = array(
+        public function contacts() {
+                $contactsData = array(
                 );
-                $templateResponse = new TemplateResponse('sciencemesh', 'shared', $sharesData);
+                $templateResponse = new TemplateResponse('sciencemesh', 'contacts', $contactsData);
         	$policy = new ContentSecurityPolicy();
 		$policy->addAllowedStyleDomain("data:");
 		$policy->addAllowedScriptDomain("'self'");
