@@ -10,8 +10,6 @@ script("sciencemesh", "vendor/simplyedit/simply.everything");
 	</div>
 	<div id="app-content">
 		<div id="app-content-wrapper" class="viewcontainer">
-			<main class="sciencemesh-container sciencemesh-invitations">
-				<h1>Invitation tokens</h1>
 				<div class="app-content-list">
 					<div href="#" class="app-content-list-item">
 						<!-- div class="app-content-list-item-star icon-starred"></div -->
@@ -33,7 +31,12 @@ script("sciencemesh", "vendor/simplyedit/simply.everything");
 						</div>
 					</div>
 				</div>
-			</main>
+				<div class="app-content-detail">
+					<div class="section">
+						<p>To invite someone to collaborate on ScienceMesh, generate a new invite token and send it to them.</p>
+						<p>If you have received an invitation, you can enter that in 'Contacts' to confirm the collaboration.</p>
+					</div>
+				</div>
 		</div>
 	</div>
 </div>
